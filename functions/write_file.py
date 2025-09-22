@@ -7,7 +7,7 @@ def write_file(working_directory, file_path, content):
         abs_working = os.path.abspath(working_directory)
 
         if not (abs_target.startswith(abs_working + os.sep) or abs_target == abs_working):
-            raise Exception(f'Cannot read "{file_path}" as it is outside the permitted working directory')
+            raise Exception(f'Cannot write to "{file_path}" as it is outside the permitted working directory')
         
         with open(abs_target, "w" if os.path.exists(abs_target) else "x") as f:
             f.write(content)

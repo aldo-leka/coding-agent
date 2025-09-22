@@ -1,5 +1,7 @@
-from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
-write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
-write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
-write_file("calculator", "/tmp/temp.txt", "this should not be allowed")
+run_python_file("calculator", "main.py") # (should print the calculator's usage instructions)
+run_python_file("calculator", "main.py", ["3 + 5"]) # (should run the calculator... which gives a kinda nasty rendered result)
+run_python_file("calculator", "tests.py")
+run_python_file("calculator", "../main.py") # (this should return an error)
+run_python_file("calculator", "nonexistent.py") # (this should return an error)
