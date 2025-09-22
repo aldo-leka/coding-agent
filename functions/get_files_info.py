@@ -12,10 +12,10 @@ def get_files_info(working_directory, directory="."):
             print(f"Result for '{directory}' directory:")
 
         if not (abs_target.startswith(abs_working + os.sep) or abs_target == abs_working):
-            raise Exception(f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
+            raise Exception(f'Cannot list "{directory}" as it is outside the permitted working directory')
 
         if not os.path.isdir(abs_target):
-            raise Exception(f'Error: "{directory}" is not a directory')
+            raise Exception(f'"{directory}" is not a directory')
         
         contents = os.listdir(abs_target)
         contents_strs = []
@@ -28,5 +28,6 @@ def get_files_info(working_directory, directory="."):
         contents_str = "\n".join(contents_strs)
         return contents_str
     except Exception as e:
-        print(e)
-        return str(e)
+        err = f"Error: {str(e)}"
+        print(err)
+        return err
