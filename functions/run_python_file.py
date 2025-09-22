@@ -1,6 +1,26 @@
 import os
 import subprocess
 from functions.config import EXECUTE_TIMEOUT
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs given '.py' file with a execution timeout of 30 seconds.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The Python file to execute, relative to the working directory.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(type=types.Type.STRING),
+                description="The array of optional arguments to pass to the execution call.",
+            ),
+        },
+    ),
+)
 
 def run_python_file(working_directory, file_path, args=[]):
     try:
@@ -33,3 +53,4 @@ def run_python_file(working_directory, file_path, args=[]):
     except Exception as e:
         print(f"{str(e)}")
         return f"Error: executing Python file: {e}"
+    
