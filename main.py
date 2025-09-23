@@ -95,20 +95,34 @@ available_functions = types.Tool(
     ]
 )
 
-response = client.models.generate_content(
-    model="gemini-2.0-flash-001",
-    contents=messages,
-    config=types.GenerateContentConfig(
-        tools=[available_functions],
-        system_instruction=system_prompt
-    ))
+for i in range(0, 20):
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-001",
+            contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions],
+                system_instruction=system_prompt
+            ))
+        
+        if not response.function_calls and response.text:
+            print(response.text)
+            break
 
-for function_call_part in response.function_calls:
-    function_call_result = call_function(function_call_part, verbose)
-    if verbose:
-        print(f"-> {function_call_result.parts[0].function_response.response}")
+        for candidate in response.candidates:
+            messages.append(candidate.content)
 
-if verbose:
-    print(f"User prompt: {user_prompt}")
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        for function_call_part in response.function_calls:
+            function_call_result = call_function(function_call_part, verbose)
+            if verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
+            
+            messages.append(types.Content(role="user", parts=function_call_result.parts))
+
+        if verbose:
+            print(f"User prompt: {user_prompt}")
+            print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+            print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
